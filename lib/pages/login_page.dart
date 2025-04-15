@@ -3,11 +3,13 @@ import 'employee_checklist.dart';
 import 'admin_dashboard.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   String? _errorMessage;
@@ -20,12 +22,12 @@ class _LoginPageState extends State<LoginPage> {
     if (username == "admin" && password == "admin") {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => AdminDashboard()),
+        MaterialPageRoute(builder: (context) => const AdminDashboard()),
       );
     } else if (username == "employee" && password == "employee") {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => EmployeeChecklist()),
+        MaterialPageRoute(builder: (context) => const EmployeeChecklist()),
       );
     } else {
       setState(() {
@@ -53,35 +55,35 @@ class _LoginPageState extends State<LoginPage> {
                       size: 64,
                       color: Theme.of(context).primaryColor,
                     ),
-                    SizedBox(height: 16),
-                    Text(
+                    const SizedBox(height: 16),
+                    const Text(
                       "Sistema de Checklist",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       "Faça login para acessar o sistema",
                       style: TextStyle(
                         color: Colors.grey[600],
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     TextField(
                       controller: _usernameController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Usuário",
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.person),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextField(
                       controller: _passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: "Senha",
                         border: OutlineInputBorder(),
                         prefixIcon: Icon(Icons.lock),
@@ -92,16 +94,16 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.only(top: 16),
                         child: Text(
                           _errorMessage!,
-                          style: TextStyle(color: Colors.red),
+                          style: const TextStyle(color: Colors.red),
                         ),
                       ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: _handleLogin,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12.0),
                           child: Text("Entrar"),
                         ),
                       ),

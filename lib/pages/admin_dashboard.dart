@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'employee_checklist.dart';
+import '../utils/export_service.dart';
 
 class AdminDashboard extends StatefulWidget {
+  const AdminDashboard({super.key});
+
   @override
-  _AdminDashboardState createState() => _AdminDashboardState();
+  AdminDashboardState createState() => AdminDashboardState(); // ✅ agora o tipo é público
 }
 
-class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProviderStateMixin {
+
+class AdminDashboardState extends State<AdminDashboard> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   
   @override
@@ -25,20 +29,20 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Painel Administrativo'),
+        title: const Text('Painel Administrativo'),
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => EmployeeChecklist()),
+                MaterialPageRoute(builder: (context) => const EmployeeChecklist()),
               );
             },
             tooltip: 'Novo Checklist',
           ),
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
@@ -47,7 +51,7 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
         ],
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(text: 'Relatórios', icon: Icon(Icons.assessment)),
             Tab(text: 'Usuários', icon: Icon(Icons.people)),
             Tab(text: 'Viaturas', icon: Icon(Icons.directions_car)),
@@ -66,113 +70,179 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
   }
 
   Widget _buildReportsTab() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Filtros',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Data Inicial',
-                            border: OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.calendar_today),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Data Final',
-                            border: OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.calendar_today),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
-                            labelText: 'Viatura',
-                            border: OutlineInputBorder(),
-                          ),
-                          items: [
-                            DropdownMenuItem(value: '', child: Text('Todas')),
-                            DropdownMenuItem(value: 'Ambulância 01', child: Text('Ambulância 01')),
-                            DropdownMenuItem(value: 'Ambulância 02', child: Text('Ambulância 02')),
-                          ],
-                          onChanged: (value) {},
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            labelText: 'Condutor',
-                            border: OutlineInputBorder(),
-                            suffixIcon: Icon(Icons.search),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton.icon(
-                      onPressed: () {},
-                      icon: Icon(Icons.filter_list),
-                      label: Text('Filtrar'),
-                    ),
-                  ),
-                ],
-              ),
+  // Dados de exemplo para exportação
+  final List<Map<String, dynamic>> checklistData = [
+    {'id': 1, 'date': '01/05/2023', 'vehicle': 'Ambulância 01', 'driver': 'João Silva', 'region': 'Norte', 'status': 'Completo'},
+    {'id': 2, 'date': '02/05/2023', 'vehicle': 'Ambulância 02', 'driver': 'Maria Santos', 'region': 'Sul', 'status': 'Completo'},
+    {'id': 3, 'date': '03/05/2023', 'vehicle': 'Ambulância 03', 'driver': 'Pedro Alves', 'region': 'Leste', 'status': 'Incompleto'},
+    {'id': 4, 'date': '04/05/2023', 'vehicle': 'Ambulância 01', 'driver': 'Ana Costa', 'region': 'Oeste', 'status': 'Completo'},
+    {'id': 5, 'date': '05/05/2023', 'vehicle': 'Ambulância 04', 'driver': 'Carlos Mendes', 'region': 'USA-1', 'status': 'Completo'},
+  ];
+
+  // Cabeçalhos e chaves para exportação
+  final List<String> headers = ['ID', 'Data', 'Viatura', 'Condutor', 'Região', 'Status'];
+  final List<String> keys = ['id', 'date', 'vehicle', 'driver', 'region', 'status'];
+
+  // Função para mostrar opções de exportação
+  void showExportOptions() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Exportar Relatório'),
+          content: const Text('Escolha o formato de exportação:'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ExportService.exportToPdf(
+                  checklistData,
+                  headers,
+                  keys,
+                  'Relatório de Checklist de Viaturas',
+                );
+              },
+              child: const Text('PDF'),
             ),
-          ),
-          SizedBox(height: 16),
-          Expanded(
-            child: Card(
-              child: ListView.separated(
-                itemCount: 5,
-                separatorBuilder: (context, index) => Divider(),
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      child: Text('${index + 1}'),
-                    ),
-                    title: Text('Checklist #${1000 + index}'),
-                    subtitle: Text('Ambulância 0${index + 1} - ${DateTime.now().toString().substring(0, 10)}'),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Abrir detalhes do checklist
-                    },
-                  );
-                },
-              ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ExportService.exportToCsv(
+                  checklistData,
+                  headers,
+                  keys,
+                );
+              },
+              child: const Text('CSV'),
             ),
-          ),
-        ],
-      ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancelar'),
+            ),
+          ],
+        );
+      },
     );
   }
+
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Filtros',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                const Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Data Inicial',
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.calendar_today),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Data Final',
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.calendar_today),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: 'Viatura',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: '', child: Text('Todas')),
+                          DropdownMenuItem(value: 'Ambulância 01', child: Text('Ambulância 01')),
+                          DropdownMenuItem(value: 'Ambulância 02', child: Text('Ambulância 02')),
+                        ],
+                        onChanged: (value) {},
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    const Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          labelText: 'Condutor',
+                          border: OutlineInputBorder(),
+                          suffixIcon: Icon(Icons.search),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.filter_list),
+                      label: const Text('Filtrar'),
+                    ),
+                    const SizedBox(width: 16),
+                    // Botão de exportação adicionado aqui
+                    ElevatedButton.icon(
+                      onPressed: showExportOptions,
+                      icon: const Icon(Icons.file_download),
+                      label: const Text('Exportar Relatório'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Expanded(
+          child: Card(
+            child: ListView.separated(
+              itemCount: 5,
+              separatorBuilder: (context, index) => const Divider(),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: CircleAvatar(
+                    child: Text('${index + 1}'),
+                  ),
+                  title: Text('Checklist #${1000 + index}'),
+                  subtitle: Text('Ambulância 0${index + 1} - ${DateTime.now().toString().substring(0, 10)}'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    // Abrir detalhes do checklist
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildUsersTab() {
     return Padding(
@@ -183,7 +253,7 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Lista de Usuários',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -191,23 +261,23 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
                 onPressed: () {
                   // Adicionar novo usuário
                 },
-                icon: Icon(Icons.add),
-                label: Text('Adicionar Usuário'),
+                icon: const Icon(Icons.add),
+                label: const Text('Adicionar Usuário'),
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: Card(
               child: ListView.separated(
                 itemCount: 5,
-                separatorBuilder: (context, index) => Divider(),
+                separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final names = ['João Silva', 'Maria Santos', 'Pedro Alves', 'Ana Costa', 'Carlos Mendes'];
                   final roles = ['Admin', 'Funcionário', 'Funcionário', 'Admin', 'Funcionário'];
                   
                   return ListTile(
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       child: Icon(Icons.person),
                     ),
                     title: Text(names[index]),
@@ -216,13 +286,13 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                           onPressed: () {
                             // Editar usuário
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () {
                             // Excluir usuário
                           },
@@ -248,7 +318,7 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Lista de Viaturas',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -256,24 +326,24 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
                 onPressed: () {
                   // Adicionar nova viatura
                 },
-                icon: Icon(Icons.add),
-                label: Text('Adicionar Viatura'),
+                icon: const Icon(Icons.add),
+                label: const Text('Adicionar Viatura'),
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Expanded(
             child: Card(
               child: ListView.separated(
                 itemCount: 5,
-                separatorBuilder: (context, index) => Divider(),
+                separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
                   final vehicles = ['Ambulância 01', 'Ambulância 02', 'Ambulância 03', 'Ambulância 04', 'Ambulância 05'];
                   final plates = ['ABC-1234', 'DEF-5678', 'GHI-9012', 'JKL-3456', 'MNO-7890'];
                   final kms = [12500, 8700, 15300, 5200, 9800];
                   
                   return ListTile(
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       child: Icon(Icons.directions_car),
                     ),
                     title: Text(vehicles[index]),
@@ -282,13 +352,13 @@ class _AdminDashboardState extends State<AdminDashboard> with SingleTickerProvid
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                           onPressed: () {
                             // Editar viatura
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () {
                             // Excluir viatura
                           },

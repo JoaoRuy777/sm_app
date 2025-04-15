@@ -15,11 +15,13 @@ class ChecklistItem {
 }
 
 class EmployeeChecklist extends StatefulWidget {
+  const EmployeeChecklist({super.key});
+
   @override
-  _EmployeeChecklistState createState() => _EmployeeChecklistState();
+  EmployeeChecklistState createState() => EmployeeChecklistState();
 }
 
-class _EmployeeChecklistState extends State<EmployeeChecklist> {
+class EmployeeChecklistState extends State<EmployeeChecklist> {
   int _currentStep = 0;
   String _selectedVehicle = '';
   String _selectedRegion = '';
@@ -91,7 +93,7 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
   void _submitChecklist() {
     // Aqui você implementaria a lógica para salvar o checklist
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Checklist enviado com sucesso!')),
+      const SnackBar(content: Text('Checklist enviado com sucesso!')),
     );
     Navigator.pop(context);
   }
@@ -112,7 +114,7 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checklist de Viatura'),
+        title: const Text('Checklist de Viatura'),
       ),
       body: Stepper(
         type: StepperType.horizontal,
@@ -133,7 +135,7 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
                     padding: const EdgeInsets.only(left: 10.0),
                     child: TextButton(
                       onPressed: details.onStepCancel,
-                      child: Text('Voltar'),
+                      child: const Text('Voltar'),
                     ),
                   ),
               ],
@@ -142,12 +144,12 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
         },
         steps: [
           Step(
-            title: Text('Informações'),
+            title: const Text('Informações'),
             content: _buildBasicInfoForm(),
             isActive: _currentStep >= 0,
           ),
           Step(
-            title: Text('Checklist'),
+            title: const Text('Checklist'),
             content: _buildChecklistForm(),
             isActive: _currentStep >= 1,
           ),
@@ -160,10 +162,10 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Selecione a viatura:'),
+        const Text('Selecione a viatura:'),
         DropdownButton<String>(
           isExpanded: true,
-          hint: Text('Selecione a viatura'),
+          hint: const Text('Selecione a viatura'),
           value: _selectedVehicle.isEmpty ? null : _selectedVehicle,
           onChanged: (String? newValue) {
             if (newValue != null) {
@@ -179,11 +181,11 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
             );
           }).toList(),
         ),
-        SizedBox(height: 16),
-        Text('Selecione a região:'),
+        const SizedBox(height: 16),
+        const Text('Selecione a região:'),
         DropdownButton<String>(
           isExpanded: true,
-          hint: Text('Selecione a região'),
+          hint: const Text('Selecione a região'),
           value: _selectedRegion.isEmpty ? null : _selectedRegion,
           onChanged: (String? newValue) {
             if (newValue != null) {
@@ -199,18 +201,18 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
             );
           }).toList(),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         TextField(
           controller: _nurseController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Nome do Enfermeiro',
             border: OutlineInputBorder(),
           ),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         TextField(
           controller: _kmController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Quilometragem',
             border: OutlineInputBorder(),
           ),
@@ -223,9 +225,9 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
   Widget _buildChecklistForm() {
     return ListView.separated(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: _checklistItems.length,
-      separatorBuilder: (context, index) => Divider(),
+      separatorBuilder: (context, index) => const Divider(),
       itemBuilder: (context, index) {
         final item = _checklistItems[index];
         return Column(
@@ -233,9 +235,9 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
           children: [
             Text(
               '${index + 1}. ${item.title}',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(
               children: [
                 Expanded(
@@ -244,17 +246,17 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
                       backgroundColor: item.status == 'C' ? Colors.green : null,
                     ),
                     onPressed: () => _setItemStatus(index, 'C'),
-                    child: Text('Conforme'),
+                    child: const Text('Conforme'),
                   ),
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: item.status == 'NC' ? Colors.red : null,
                     ),
                     onPressed: () => _setItemStatus(index, 'NC'),
-                    child: Text('Não Conforme'),
+                    child: const Text('Não Conforme'),
                   ),
                 ),
               ],
@@ -263,21 +265,21 @@ class _EmployeeChecklistState extends State<EmployeeChecklist> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Observação',
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) => _setItemObservation(index, value),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   ElevatedButton.icon(
                     onPressed: () {
                       // Aqui você implementaria a captura de foto
                     },
-                    icon: Icon(Icons.camera_alt),
-                    label: Text('Anexar Foto'),
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Anexar Foto'),
                   ),
                 ],
               ),

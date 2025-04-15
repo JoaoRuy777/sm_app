@@ -11,20 +11,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:myapp/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('Login Page UI Test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the title is displayed.
+    expect(find.text('Sistema de Checklist'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Verify that the subtitle is displayed.
+    expect(find.text('Faça login para acessar o sistema'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the username text field is present.
+    expect(find.widgetWithText(TextField, 'Usuário'), findsOneWidget);
+
+    // Verify that the password text field is present.
+    expect(find.widgetWithText(TextField, 'Senha'), findsOneWidget);
+
+    // Verify that the login button is present.
+    expect(find.widgetWithText(ElevatedButton, 'Entrar'), findsOneWidget);
   });
 }
